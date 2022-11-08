@@ -1,0 +1,10 @@
+# Vim
+*.swp
+*.swo
+
+# Emacs
+.projectile
+
+# CSharp
+**/obj/
+**/bin/
