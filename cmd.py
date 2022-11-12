@@ -17,6 +17,9 @@ try:
     elif (command == "wrun"):
         print("[Python CMD]  Project is running in watch mode.")
         subprocess.run(["dotnet", "watch", "run", "--project", "src/Api"])
+    elif (command == "test"):
+        print("[Python CMD]  Project is now being tested.")
+        subprocess.run(["dotnet", "test", "src/Tests"])
     else:
         print("[Python CMD]  Didn't Match Anything.")
 except KeyboardInterrupt:

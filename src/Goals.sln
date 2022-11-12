@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{48861BA0-975C-455C-B742-5435AE1B9815}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B126077A-2C5B-4F1E-910A-5F0A3D6717BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{48861BA0-975C-455C-B742-5435AE1B9815}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48861BA0-975C-455C-B742-5435AE1B9815}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48861BA0-975C-455C-B742-5435AE1B9815}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B126077A-2C5B-4F1E-910A-5F0A3D6717BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B126077A-2C5B-4F1E-910A-5F0A3D6717BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B126077A-2C5B-4F1E-910A-5F0A3D6717BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B126077A-2C5B-4F1E-910A-5F0A3D6717BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
