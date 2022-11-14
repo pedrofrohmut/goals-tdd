@@ -20,5 +20,7 @@ public class SignUpUserUseCase : ISignUpUserUseCase
     private void ValidateUser(CreateUserDto newUser)
     {
         this.userValidator.ValidateName(newUser.Name);
+        this.userValidator.ValidateEmail(newUser.Email);
+        this.userValidator.ValidatePassword(newUser.Password);
     }
 }
