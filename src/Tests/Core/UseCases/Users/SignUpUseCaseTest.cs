@@ -6,16 +6,20 @@ using FluentAssertions;
 using Goals.Core.UseCases.Users;
 using Goals.Core.Validators;
 using Goals.Core.Exceptions;
+using Moq;
+using Goals.Core.DataAccess;
+using System;
 
 namespace Goals.Tests.Core.UseCases.Users;
 
 public class SignUpUseCaseTest
 {
+
     [Fact]
     async Task EmptyName_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var newUser = new CreateUserDto() { Name = "", Email = "john@doe.com", Password = "123" };
         // When
@@ -28,8 +32,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task ShortLengthName_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var shortName = "jo";
         var newUser = new CreateUserDto() { Name = shortName, Email = "john@doe.com", Password = "123" };
@@ -43,8 +47,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task LongLengthName_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var longName = "john000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
         var newUser = new CreateUserDto() { Name = longName, Email = "john@doe.com", Password = "123" };
@@ -58,8 +62,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task EmptyEmail_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var emptyEmail = "";
         var newUser = new CreateUserDto() { Name = "John Doe", Email = emptyEmail, Password = "123" };
@@ -73,8 +77,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task InvalidEmail_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var invalidEmail = "johndoe";
         var newUser = new CreateUserDto() { Name = "John Doe", Email = invalidEmail, Password = "123" };
@@ -88,8 +92,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task EmptyPassword_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var emptyPassword = "";
         var newUser = new CreateUserDto() { Name = "John Doe",
@@ -105,8 +109,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task ShortPassword_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var shortPassword = "00";
         var newUser = new CreateUserDto() { Name = "John Doe",
@@ -122,8 +126,8 @@ public class SignUpUseCaseTest
     [Fact]
     async Task LongPassword_ThrowsInvalidUserException()
     {
-        var userValidator = new UserValidator();
-        var useCase = new SignUpUserUseCase(userValidator);
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
         // Given
         var longPassword = "000000000000000000000000000000000";
         var newUser = new CreateUserDto() { Name = "John Doe",
@@ -135,4 +139,44 @@ public class SignUpUseCaseTest
         await result.Should().ThrowAsync<InvalidUserException>()
             .WithMessage("User password must be between 3 and 32 characters");
     }
+
+    [Fact]
+    async Task EmailAlreadyInUse_ThrowsEmailAlreadyTakenException()
+    {
+        var email = "john@doe.com";
+        var foundUser = new UserDbDto() { Id = Guid.NewGuid(),
+                                          Name = "John Doe",
+                                          Email = email,
+                                          PasswordHash = "HASH" };
+        var mock = new Mock<IUserDataAccess>();
+        mock.Setup(dataAccess => dataAccess.FindUserByEmail(email)).ReturnsAsync(foundUser);
+        var userDataAccess = mock.Object;
+        var user = await userDataAccess.FindUserByEmail(email);
+        var newUser = new CreateUserDto() { Name = "Johnny", Email = email, Password = "1234" };
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
+        // Given
+        user.Should().NotBeNull();
+        // When
+        var result = useCase.Invoking(useCase => useCase.Execute(newUser));
+        // Then
+        await result.Should().ThrowAsync<EmailAlreadyTakenException>()
+            .WithMessage("User e-mail is already registered and must be unique");
+    }
+
+    [Fact]
+    async Task WithNoExceptions_UserIsCreated()
+    {
+        var email = "john@doe.com";
+        var userDataAccess = new Mock<IUserDataAccess>().Object;
+        var user = await userDataAccess.FindUserByEmail(email);
+        var newUser = new CreateUserDto() { Name = "Johnny", Email = email, Password = "1234" };
+        var useCase = new SignUpUserUseCase(new UserValidator(), userDataAccess);
+        // Given
+        user.Should().BeNull();
+        // When
+        var result = useCase.Invoking(useCase => useCase.Execute(newUser));
+        // Then
+        await result.Should().NotThrowAsync();
+    }
+
 }
