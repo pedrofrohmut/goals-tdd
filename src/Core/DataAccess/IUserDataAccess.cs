@@ -5,5 +5,5 @@ namespace Goals.Core.DataAccess;
 public interface IUserDataAccess
 {
     Task Create(CreateUserDto newUser, string passwordHash);
-    Task<UserDbDto?> FindUserByEmail(string email);
+    Task<UserDbDto?> FindByEmail(string email);
 }

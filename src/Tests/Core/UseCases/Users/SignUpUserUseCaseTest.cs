@@ -157,8 +157,8 @@ public class SignUpUserUseCaseTest : IDisposable
                                           Name = "John Doe",
                                           Email = email,
                                           PasswordHash = "HASH" };
-        this.userDAMock.Setup(dataAccess => dataAccess.FindUserByEmail(email)).ReturnsAsync(foundUser);
-        var user = await this.userDAMock.Object.FindUserByEmail(email);
+        this.userDAMock.Setup(dataAccess => dataAccess.FindByEmail(email)).ReturnsAsync(foundUser);
+        var user = await this.userDAMock.Object.FindByEmail(email);
         var newUser = new CreateUserDto() { Name = "Johnny", Email = email, Password = "1234" };
         var useCase = new SignUpUserUseCase(new UserValidator(), this.userDAMock.Object, new PasswordService());
         // Given
@@ -174,7 +174,7 @@ public class SignUpUserUseCaseTest : IDisposable
     async Task WithNoExceptions_UserIsCreated()
     {
         var email = "john@doe.com";
-        var user = await this.userDAMock.Object.FindUserByEmail(email);
+        var user = await this.userDAMock.Object.FindByEmail(email);
         var newUser = new CreateUserDto() { Name = "Johnny", Email = email, Password = "1234" };
         var useCase = new SignUpUserUseCase(new UserValidator(), this.userDAMock.Object, this.passServMock.Object);
         // Given

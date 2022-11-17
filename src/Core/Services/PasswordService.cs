@@ -6,4 +6,9 @@ public class PasswordService : IPasswordService
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> MatchPasswordAndHash(string password, string hash)
+    {
+        throw new NotImplementedException();
+    }
 }

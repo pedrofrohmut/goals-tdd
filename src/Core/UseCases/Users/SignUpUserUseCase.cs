@@ -38,7 +38,7 @@ public class SignUpUserUseCase : ISignUpUserUseCase
 
     private async Task CheckEmailIsAvailable(string email)
     {
-        var user = await this.userDataAccess.FindUserByEmail(email);
+        var user = await this.userDataAccess.FindByEmail(email);
         if (user != null) {
             throw new EmailAlreadyTakenException();
         }
