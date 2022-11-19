@@ -11,14 +11,17 @@ public class SignInUserUseCase : ISignInUserUseCase
     private readonly IUserValidator userValidator;
     private readonly IUserDataAccess userDataAccess;
     private readonly IPasswordService passwordService;
+    private readonly ITokenService tokenService;
 
     public SignInUserUseCase(IUserValidator userValidator,
                              IUserDataAccess userDataAccess,
-                             IPasswordService passwordService)
+                             IPasswordService passwordService,
+                             ITokenService tokenService)
     {
         this.userValidator = userValidator;
         this.userDataAccess = userDataAccess;
         this.passwordService = passwordService;
+        this.tokenService = tokenService;
     }
 
     public async Task<SignedUserDto> Execute(SignInCredentialsDto credentials)
@@ -26,7 +29,13 @@ public class SignInUserUseCase : ISignInUserUseCase
         this.ValidateCredentials(credentials);
         var user = await this.FindUser(credentials.Email);
         await this.CheckPasswordMatch(credentials.Password, user.PasswordHash);
-        return null;
+        var token = await this.CreateToken(user.Id);
+        return new SignedUserDto() {
+            Id = user.Id.ToString(),
+            Name = user.Name,
+            Email = user.Email,
+            Token = token
+        };
     }
 
     private void ValidateCredentials(SignInCredentialsDto credentials)
@@ -51,4 +60,6 @@ public class SignInUserUseCase : ISignInUserUseCase
             throw new PasswordNotMatchException();
         }
     }
+
+    private Task<string> CreateToken(Guid userId) => this.tokenService.CreateToken(userId.ToString());
 }

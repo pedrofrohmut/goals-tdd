@@ -1,4 +1,6 @@
-namespace Goals.Core.Services;
+using Goals.Core.Services;
+
+namespace Goals.Services;
 
 public class PasswordService : IPasswordService
 {

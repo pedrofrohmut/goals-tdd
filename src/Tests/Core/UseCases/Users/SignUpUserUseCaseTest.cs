@@ -2,14 +2,15 @@ using System.Threading.Tasks;
 using Goals.Core.Dtos;
 using Xunit;
 using FluentAssertions;
+using Moq;
+using System;
 
 using Goals.Core.UseCases.Users;
 using Goals.Core.Validators;
 using Goals.Core.Exceptions;
-using Moq;
 using Goals.Core.DataAccess;
-using System;
 using Goals.Core.Services;
+using Goals.Services;
 
 namespace Goals.Tests.Core.UseCases.Users;
 
