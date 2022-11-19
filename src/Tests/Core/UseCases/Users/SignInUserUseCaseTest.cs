@@ -8,7 +8,6 @@ using Goals.Core.DataAccess;
 using Goals.Core.Dtos;
 using Goals.Core.Exceptions;
 using Goals.Core.Services;
-using Goals.Services;
 using Goals.Core.UseCases.Users;
 using Goals.Core.Validators;
 
