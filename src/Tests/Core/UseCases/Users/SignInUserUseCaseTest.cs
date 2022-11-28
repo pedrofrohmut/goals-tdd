@@ -149,7 +149,7 @@ public class SignInUserUseCaseTest : IDisposable
         var user = await this.userDAMock.Object.FindByEmail(EMAIL);
         this.passServMock.Setup(x => x.MatchPasswordAndHash(PASSWORD, this.userDb.PasswordHash)).ReturnsAsync(true);
         var isMatch = await this.passServMock.Object.MatchPasswordAndHash(PASSWORD, this.userDb.PasswordHash);
-        this.tokenServMock.Setup(x => x.CreateToken(userDb.Id.ToString())).ReturnsAsync("TOKEN");
+        this.tokenServMock.Setup(x => x.CreateToken(userDb.Id.ToString())).ReturnsAsync(TOKEN);
         // Given
         var credentials = new SignInCredentialsDto() { Email = EMAIL, Password = PASSWORD };
         user.Should().NotBeNull();
@@ -157,13 +157,13 @@ public class SignInUserUseCaseTest : IDisposable
         // When
         var response = await this.useCase.Execute(credentials);
         // Then
-        this.passServMock.Verify(x => x.MatchPasswordAndHash(PASSWORD, this.userDb.PasswordHash), Times.AtLeastOnce());
+        this.passServMock.Verify(x => x.MatchPasswordAndHash(PASSWORD, this.userDb.PasswordHash),
+                                 Times.AtLeastOnce());
         this.tokenServMock.Verify(x => x.CreateToken(this.userDb.Id.ToString()), Times.AtLeastOnce());
         response.Should().NotBeNull();
-        response.Id.Should().Be(userDb.Id.ToString());
-        response.Name.Should().Be(userDb.Name);
-        response.Email.Should().Be(userDb.Email);
-        response.Token.Should().NotBeNull();
-        response.Token.Should().NotBe("");
+        response.Id.Should().Be(this.userDb.Id.ToString());
+        response.Name.Should().Be(this.userDb.Name);
+        response.Email.Should().Be(this.userDb.Email);
+        response.Token.Should().Be(TOKEN);
     }
 }

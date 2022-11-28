@@ -5,6 +5,17 @@ namespace Goals.Core.Validators;
 
 public class UserValidator : IUserValidator
 {
+    public void ValidateId(string userId)
+    {
+        if (String.IsNullOrWhiteSpace(userId)) {
+            throw new InvalidUserException("User id is required and cannot be empty");
+        }
+        var isValid = Guid.TryParse(userId, out var _result);
+        if (! isValid) {
+            throw new InvalidUserException("User id is not a valid GUID (globally unique identifier)");
+        }
+    }
+
     public void ValidateName(string name)
     {
         if (String.IsNullOrWhiteSpace(name)) {

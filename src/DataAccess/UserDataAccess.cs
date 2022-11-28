@@ -14,4 +14,9 @@ public class UserDataAccess : IUserDataAccess
     {
         throw new NotImplementedException();
     }
+
+    public Task<UserDbDto?> FindById(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
 }
