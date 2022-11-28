@@ -32,28 +32,14 @@ public class VerifyUserUseCaseTest : IDisposable
     // Clean Up
     public void Dispose() {}
 
-    [Fact]
-    async Task EmptyAuthUserId_ThrowsInvalidUserException()
+    // Validation Theory
+    [Theory]
+    [InlineData("")]
+    [InlineData("INVALID_GUID")]
+    async Task ValidateId(string authUserId)
     {
-        // Given
-        var emptyAuthUserId = "";
-        // When
-        var result = () => this.verifyUserUseCase.Execute(emptyAuthUserId);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User id is required and cannot be empty");
-    }
-
-    [Fact]
-    async Task InvalidAuthUserId_ThrowsInvalidUserException()
-    {
-        // Given
-        var invalidAuthUserId = "INVALID_GUID";
-        // When
-        var result = () => this.verifyUserUseCase.Execute(invalidAuthUserId);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User id is not a valid GUID (globally unique identifier)");
+        var result = () => this.verifyUserUseCase.Execute(authUserId);
+        await result.Should().ThrowAsync<InvalidUserException>();
     }
 
     [Fact]

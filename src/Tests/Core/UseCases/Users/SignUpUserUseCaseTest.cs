@@ -41,108 +41,33 @@ public class SignUpUserUseCaseTest : IDisposable
     // Clean Up
     public void Dispose() {}
 
-    [Fact]
-    async Task EmptyName_ThrowsInvalidUserException()
+    [Theory]
+    [InlineData("")]
+    [InlineData("jo")]
+    [InlineData("john000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")]
+    async Task ValidateName(string name)
     {
-        var emptyName = "";
-        // Given
-        var newUser = new CreateUserDto() { Name = emptyName, Email = EMAIL, Password = PASSWORD };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User name is required and cannot be empty");
+        var newUser = new CreateUserDto() { Name = name, Email = EMAIL, Password = PASSWORD };
+        await this.useCase.Invoking(x => x.Execute(newUser)).Should().ThrowAsync<InvalidUserException>();
     }
 
-    [Fact]
-    async Task ShortLengthName_ThrowsInvalidUserException()
+    [Theory]
+    [InlineData("")]
+    [InlineData("johndoe.com")]
+    async Task ValidateEmail(string email)
     {
-        // Given
-        var shortName = "jo";
-        var newUser = new CreateUserDto() { Name = shortName, Email = EMAIL, Password = PASSWORD };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User name must between 3 and 120 characters long");
+        var newUser = new CreateUserDto() { Name = NAME, Email = email, Password = PASSWORD };
+        await this.useCase.Invoking(x => x.Execute(newUser)).Should().ThrowAsync<InvalidUserException>();
     }
 
-    [Fact]
-    async Task LongLengthName_ThrowsInvalidUserException()
+    [Theory]
+    [InlineData("")]
+    [InlineData("00")]
+    [InlineData("000000000000000000000000000000000")]
+    async Task ValidatePassword(string password)
     {
-        // Given
-        var longName = "john000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-        var newUser = new CreateUserDto() { Name = longName, Email = EMAIL, Password = PASSWORD };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User name must between 3 and 120 characters long");
-    }
-
-    [Fact]
-    async Task EmptyEmail_ThrowsInvalidUserException()
-    {
-        // Given
-        var emptyEmail = "";
-        var newUser = new CreateUserDto() { Name = NAME, Email = emptyEmail, Password = PASSWORD };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User e-mail is required and cannot be empty");
-    }
-
-    [Fact]
-    async Task InvalidEmail_ThrowsInvalidUserException()
-    {
-        // Given
-        var invalidEmail = "johndoe";
-        var newUser = new CreateUserDto() { Name = NAME, Email = invalidEmail, Password = PASSWORD };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User e-mail format is invalid");
-    }
-
-    [Fact]
-    async Task EmptyPassword_ThrowsInvalidUserException()
-    {
-        // Given
-        var emptyPassword = "";
-        var newUser = new CreateUserDto() { Name = NAME, Email = EMAIL, Password = emptyPassword };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User password is required and cannot be empty");
-    }
-
-    [Fact]
-    async Task ShortPassword_ThrowsInvalidUserException()
-    {
-        // Given
-        var shortPassword = "00";
-        var newUser = new CreateUserDto() { Name = NAME, Email = EMAIL, Password = shortPassword };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User password must be between 3 and 32 characters");
-    }
-
-    [Fact]
-    async Task LongPassword_ThrowsInvalidUserException()
-    {
-        // Given
-        var longPassword = "000000000000000000000000000000000";
-        var newUser = new CreateUserDto() { Name = NAME, Email = EMAIL, Password = longPassword };
-        // When
-        var result = () => this.useCase.Execute(newUser);
-        // Then
-        await result.Should().ThrowAsync<InvalidUserException>()
-            .WithMessage("User password must be between 3 and 32 characters");
+        var newUser = new CreateUserDto() { Name = NAME, Email = EMAIL, Password = password };
+        await this.useCase.Invoking(x => x.Execute(newUser)).Should().ThrowAsync<InvalidUserException>();
     }
 
     [Fact]
