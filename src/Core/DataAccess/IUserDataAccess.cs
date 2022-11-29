@@ -6,5 +6,5 @@ public interface IUserDataAccess
 {
     Task Create(CreateUserDto newUser, string passwordHash);
     Task<UserDbDto?> FindByEmail(string email);
-    Task<UserDbDto?> FindById(Guid userId);
+    Task<UserDbDto?> FindById(string userId);
 }

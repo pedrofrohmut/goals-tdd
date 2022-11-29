@@ -28,7 +28,7 @@ public class VerifyUserUseCase : IVerifyUserUseCase
 
     private async Task CheckUserExists(string authUserId)
     {
-        var user = await this.userDataAccess.FindById(Guid.Parse(authUserId));
+        var user = await this.userDataAccess.FindById(authUserId);
         if (user == null) {
             throw new UserNotFoundException("User Not Found by authUserId");
         }

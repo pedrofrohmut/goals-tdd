@@ -45,7 +45,7 @@ public class VerifyUserUseCaseTest : IDisposable
     [Fact]
     async Task UserNotFound_ThrowsUserNotFound()
     {
-        var authUserId = Guid.NewGuid();
+        var authUserId = Guid.NewGuid().ToString();
         var user = await this.userDataAccessMock.Object.FindById(authUserId);
         // Given
         user.Should().BeNull();
@@ -59,8 +59,8 @@ public class VerifyUserUseCaseTest : IDisposable
     [Fact]
     async Task ValidIdAndUserFound_DontThrow()
     {
-        var validAuthUserId = Guid.NewGuid();
-        var userDb = new UserDbDto() { Id = validAuthUserId,
+        var validAuthUserId = Guid.NewGuid().ToString();
+        var userDb = new UserDbDto() { Id = Guid.Parse(validAuthUserId),
                                        Name = "John Doe",
                                        Email = "john@doe.com",
                                        PasswordHash = "HASH" };
