@@ -49,7 +49,7 @@ public class UserValidatorTest : IDisposable
         var result = () => this.userValidator.ValidateId(invalidId);
         // Then
         result.Should().Throw<InvalidUserException>()
-            .WithMessage("User id is not a valid GUID (globally unique identifier)");
+            .WithMessage("User id is not a valid GUID (Globally Unique IDentifier)");
     }
 
     [Fact]
